@@ -366,6 +366,7 @@ message LayerParameter {
   optional ScaleParameter scale_param = 160;
   optional BiasParameter bias_param = 161;
   optional BatchReductionParameter batch_reduction_param = 162;
+  optional InterpParameter interp_param = 163;
 }
 
 // Message that stores parameters used to apply transformation
@@ -390,6 +391,14 @@ message TransformationParameter {
   // Force the decoded image to have 1 color channels.
   optional bool force_gray = 7 [default = false];
 
+  // If we want to do data augmentation, Scaling factor for randomly scaling input images
+  repeated float scale_factors = 21;
+  // the width for cropped region
+  optional uint32 crop_width = 22 [default = 0];
+  // the height for cropped region
+  optional uint32 crop_height = 23 [default = 0];
+  
+  
   //if set to true,
   //instead using a fixed position cropping (center, left-up, left-down, right-up, right-down)
   optional bool fix_crop = 10 [default = false];
@@ -645,7 +654,7 @@ message ImageDataParameter {
   // Specify the data source.
   optional string source = 1;
   // Specify the batch size.
-  optional uint32 batch_size = 4;
+  optional uint32 batch_size = 4 [default = 1];
   // The rand_skip variable is for the data layer to skip a few data points
   // to avoid all asynchronous sgd clients to start at the same point. The skip
   // point would be set as rand_skip * rand(0,1). Note that rand_skip should not
@@ -658,6 +667,16 @@ message ImageDataParameter {
   optional uint32 new_width = 10 [default = 0];
   // Specify if the images are color or gray
   optional bool is_color = 11 [default = true];
+
+  // This is the value set for pixels or images where we don't know the label
+  optional int32 ignore_label = 15 [default = 255];
+  enum LabelType {
+    NONE = 0;
+    IMAGE = 1;
+    PIXEL = 2;
+  }
+  optional LabelType label_type = 16 [default = IMAGE];
+
   // DEPRECATED. See TransformationParameter. For data pre-processing, we can do
   // simple scaling and subtracting the data mean, if provided. Note that the
   // mean subtraction is always carried out before scaling.
@@ -730,6 +749,17 @@ message InnerProductParameter {
   // May be negative to index from the end (e.g., -1 for the last axis).
   optional int32 axis = 5 [default = 1];
 }
+
+// ------------------ bingbing copy from PSPNet ---------------------
+message InterpParameter {
+    optional int32 height = 1 [default = 0]; // Height of output
+    optional int32 width = 2 [default = 0]; // Width of output
+    optional int32 zoom_factor = 3 [default = 1]; // zoom factor
+    optional int32 shrink_factor = 4 [default = 1]; // shrink factor
+    optional int32 pad_beg = 5 [default = 0]; // padding at begin of input
+    optional int32 pad_end = 6 [default = 0]; // padding at end of input
+}
+
 
 // Message that stores parameters used by LogLayer
 message LogParameter {
