@@ -21,6 +21,10 @@ void BNLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
     vector<int> shape;
     shape.push_back(1);
     shape.push_back(bottom[0]->channels());
+    // --------------- bingbing ---------------------
+    shape.push_back(1);
+    shape.push_back(1);
+    
     // slope
     this->blobs_[0].reset(new Blob<Dtype>(shape));
     shared_ptr<Filler<Dtype> > slope_filler(GetFiller<Dtype>(
