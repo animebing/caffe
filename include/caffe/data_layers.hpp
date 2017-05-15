@@ -355,6 +355,43 @@ protected:
 };
 
 
+
+// ----------------------- bingbing copy from PSPNet ------------------------
+template <typename Dtype>
+class ImageSegDataLayer : public BasePrefetchingDataLayer<Dtype> {
+ public:
+  explicit ImageSegDataLayer(const LayerParameter& param)
+    : BasePrefetchingDataLayer<Dtype>(param) {}
+  virtual ~ImageSegDataLayer();
+  virtual void DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "ImageSegData"; }
+  virtual inline int ExactNumBottomBlobs() const { return 0; }
+  virtual inline int ExactNumTopBlobs() const { return 3; }
+  virtual inline bool AutoTopBlobs() const { return true; }
+
+ protected:
+  virtual void ShuffleImages();
+  virtual void InternalThreadEntry();
+  #ifdef USE_MPI
+	inline virtual void advance_cursor(){
+		lines_id_++;
+		if (lines_id_ >= lines_.size()) {
+			// We have reached the end. Restart from the first.
+			DLOG(INFO) << "Restarting data prefetching from start.";
+			lines_id_ = 0;
+			if (this->layer_param_.image_data_param().shuffle()) {
+				ShuffleImages();
+			}
+		}
+	}
+#endif
+  Blob<Dtype> transformed_label_;
+  shared_ptr<Caffe::RNG> prefetch_rng_;
+  vector<std::pair<std::string, std::string> > lines_;
+  int lines_id_;
+};
 /**
  * @brief Provides data to the Net from video files.
  *

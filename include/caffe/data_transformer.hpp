@@ -42,6 +42,12 @@ class DataTransformer {
   void Transform(const Datum& datum_data, const Datum& datum_label, 
                Blob<Dtype>* transformed_data, Blob<Dtype>* transformed_label);
 
+  
+  // -------------------- bingbing, copy from PSPNet ------------------------
+  void TransformImgAndSeg(const std::vector<cv::Mat>& cv_img_seg,
+    Blob<Dtype>* transformed_data_blob, Blob<Dtype>* transformed_label_blob,
+    const int ignore_label);
+
   /**
    * @brief Applies the transformation defined in the data layer's
    * transform_param block to a vector of Datum.
@@ -149,7 +155,10 @@ class DataTransformer {
   Phase phase_;
   Blob<Dtype> data_mean_;
   vector<Dtype> mean_values_;
-
+  
+  // ----------------- bingbing copy from PSPNet ------------------------
+  vector<Dtype> scale_factors_;
+  
   vector<float> custom_scale_ratios_;
   int max_distort_;
 
