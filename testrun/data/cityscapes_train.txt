@@ -1,0 +1,2 @@
+image/aachen_000000_000019_leftImg8bit.png	label/aachen_000000_000019_gtFine_labelTrainIds.png
+image/aachen_000001_000019_leftImg8bit.png	label/aachen_000001_000019_gtFine_labelTrainIds.png
