@@ -57,6 +57,7 @@ if(NOT HAVE_CUDA)
 endif()
 
 # ---[ OpenCV
+set(OpenCV_DIR /usr/local/opencv-3.0.0/share/OpenCV)
 find_package(OpenCV QUIET COMPONENTS core highgui imgproc imgcodecs)
 if(NOT OpenCV_FOUND) # if not OpenCV 3.x, then imgcodecs are not found
   find_package(OpenCV REQUIRED COMPONENTS core highgui imgproc)
